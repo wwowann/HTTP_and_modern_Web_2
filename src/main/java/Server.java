@@ -19,10 +19,10 @@ public class Server {
     public void listen() throws IOException {
         int MAX_POOL = 64;
         ServerSocket serverSocket = new ServerSocket(PORT);
+        var threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_POOL);
         while (true) {
             Socket clientSocket = serverSocket.accept();
             ClientHandler clientHandler = new ClientHandler(clientSocket, handlers);
-            var threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_POOL);
             threadPoolExecutor.execute(clientHandler);
         }
     }

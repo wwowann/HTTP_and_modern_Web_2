@@ -7,14 +7,12 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Server server = new Server(9999);
-        server.listen();
         server.addHandler("GET", "/page.html", ((request, out) -> {
             final var filePath = Path.of(".", "public", request.getPathRequest());
             final String mimeType;
             try {
                 mimeType = Files.probeContentType(filePath);
-                final long length;
-                length = Files.size(filePath);
+                final long length = Files.size(filePath);
                 out.write((
                         "HTTP/1.1 200 OK\r\n" +
                                 "Content-Type: " + mimeType + "\r\n" +
@@ -28,5 +26,6 @@ public class Main {
                 ioException.printStackTrace();
             }
         }));
+        server.listen();
     }
 }

@@ -11,7 +11,7 @@ public class ClientHandler implements Runnable {
     private final Handler notFoundHandler = ((request, out) -> {
         try {
             out.write((
-                    "HTTP/1.1 484 Not Found\r\n" +
+                    "HTTP/1.1 404 Not Found\r\n" +
                             "Content-Length: 0\r\n" +
                             "Connection: close\r\n" +
                             "\r\n"
@@ -30,25 +30,24 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
-        while (!Thread.interrupted()) {
-            try (final var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                 final var out = new BufferedOutputStream(socket.getOutputStream());) {
-                Request request = Request.getParseRequest(in);
+        try (final var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             final var out = new BufferedOutputStream(socket.getOutputStream());) {
+            Request request = Request.getParseRequest(in);
 //                System.out.println(request.getPathRequest());
-                var handlesMap = handlers.get(request.getMethodRequest());
-                if (handlesMap == null) {
-                    notFoundHandler.handle(request, out);
-                    return;
-                }
-                var handler = handlesMap.get(request.getPathRequest());
-                if (handler == null) {
-                    notFoundHandler.handle(request, out);
-                    return;
-                }
-                handler.handle(request, out);
-            } catch (IOException e) {
-                e.printStackTrace();
+            var handlesMap = handlers.get(request.getMethodRequest());
+            if (handlesMap == null) {
+                notFoundHandler.handle(request, out);
+                return;
             }
+            var handler = handlesMap.get(request.getPathRequest());
+            if (handler == null) {
+                notFoundHandler.handle(request, out);
+                return;
+            }
+            handler.handle(request, out);
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
