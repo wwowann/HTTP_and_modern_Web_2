@@ -33,7 +33,6 @@ public class ClientHandler implements Runnable {
         try (final var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              final var out = new BufferedOutputStream(socket.getOutputStream());) {
             Request request = Request.getParseRequest(in);
-//                System.out.println(request.getPathRequest());
             var handlesMap = handlers.get(request.getMethodRequest());
             if (handlesMap == null) {
                 notFoundHandler.handle(request, out);
@@ -49,5 +48,6 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 }
