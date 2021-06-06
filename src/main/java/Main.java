@@ -16,7 +16,7 @@ public class Main {
                 out.write((
                         "HTTP/1.1 200 OK\r\n" +
                                 "Content-Type: " + mimeType + "\r\n" +
-                                "Content-Length: 0\r\n" + length + "\r\n" +
+                                "Content-Length: " + length + "\r\n" +
                                 "Connection: close\r\n" +
                                 "\r\n"
                 ).getBytes());
